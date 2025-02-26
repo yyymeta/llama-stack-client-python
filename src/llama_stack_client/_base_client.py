@@ -995,7 +995,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         if self.custom_auth is not None:
             kwargs["auth"] = self.custom_auth
 
-        log.debug("Sending HTTP Request: %s %s", request.method, request.url)
+        log.warn("Sending HTTP Request: %s %s", request.method, request.url)
 
         try:
             response = self._client.send(
@@ -1004,7 +1004,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
                 **kwargs,
             )
         except httpx.TimeoutException as err:
-            log.debug("Encountered httpx.TimeoutException", exc_info=True)
+            log.warn("Encountered httpx.TimeoutException", exc_info=True)
 
             if remaining_retries > 0:
                 return self._retry_request(
