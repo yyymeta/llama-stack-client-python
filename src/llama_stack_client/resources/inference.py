@@ -288,6 +288,8 @@ class InferenceResource(SyncAPIResource):
     ) -> ChatCompletionResponse | Stream[ChatCompletionResponseStreamChunk]:
         if stream:
             extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
+        print("--------------------")
+        print(messages)
         return self._post(
             "/v1/inference/chat-completion",
             body=maybe_transform(

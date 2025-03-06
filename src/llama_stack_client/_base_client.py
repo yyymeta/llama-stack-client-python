@@ -108,7 +108,7 @@ else:
         from httpx._config import DEFAULT_TIMEOUT_CONFIG as HTTPX_DEFAULT_TIMEOUT
     except ImportError:
         # taken from https://github.com/encode/httpx/blob/3ba5fe0d7ac70222590e759c31442b1cab263791/httpx/_config.py#L366
-        HTTPX_DEFAULT_TIMEOUT = Timeout(5.0)
+        HTTPX_DEFAULT_TIMEOUT = Timeout(500.0)
 
 
 class PageInfo:
@@ -508,6 +508,9 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             kwargs["extensions"] = {"sni_hostname": prepared_url.host.replace("_", "-")}
 
         # TODO: report this error to httpx
+        print("before build_request()")
+        print(json_data)
+        print(headers)
         return self._client.build_request(  # pyright: ignore[reportUnknownMemberType]
             headers=headers,
             timeout=self.timeout if isinstance(options.timeout, NotGiven) else options.timeout,
@@ -988,6 +991,8 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         options = self._prepare_options(options)
 
         remaining_retries = options.get_max_retries(self.max_retries) - retries_taken
+        print("options")
+        print(options)
         request = self._build_request(options, retries_taken=retries_taken)
         self._prepare_request(request)
 
@@ -995,7 +1000,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         if self.custom_auth is not None:
             kwargs["auth"] = self.custom_auth
 
-        log.debug("Sending HTTP Request: %s %s", request.method, request.url)
+        log.warn("Sending HTTP Request: %s %s", request.method, request.url)
 
         try:
             response = self._client.send(

@@ -97,6 +97,8 @@ def run_benchmark(
         benchmark = client.benchmarks.retrieve(benchmark_id=benchmark_id)
         scoring_functions = benchmark.scoring_functions
         dataset_id = benchmark.dataset_id
+        print(f"Client retrieve {benchmark_id} {dataset_id}")
+       
 
         rows = client.datasetio.get_rows_paginated(
             dataset_id=dataset_id,
